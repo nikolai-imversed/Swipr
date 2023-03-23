@@ -1,8 +1,10 @@
 const { Client, GatewayIntentBits, Collection, Routes, REST } = require('discord.js');
 const fs = require('node:fs');
+const config = require('./config.js')
 
-const token = "MTA4NzY3OTk4OTE4NjU2NDE2Ng.Gm37Sf.2Zh7Ss8rI-dpQiO7JGLCwOqrMYcFlYfAgmY_ew"
-const clientId = "1087679989186564166"
+
+const token = config.DAVINCI_TOKEN
+const clientId = "1088533676557606993"
 
 const client = new Client({
     intents: [
@@ -20,6 +22,7 @@ client.on('ready', () => {
     await client.login(token)
     await registerEvents()
     await registerCommand()
+    await registerCommands()
 })()
 
 async function registerCommand() {
@@ -32,6 +35,23 @@ async function registerCommand() {
         console.log(`register command: ${command.data.name}`);
 
         client.commands.set(command.data.name, command);
+    }
+}
+
+async function registerCommands() {
+    const rest = new REST({ version: '9' }).setToken(token);
+
+    try {
+        console.log('Started refreshing application (/) commands.');
+
+        await rest.put(
+            Routes.applicationCommands(clientId),
+            { body: client.commands.map((command) => command.data.toJSON()) },
+        );
+
+        console.log('Successfully reloaded application (/) commands.');
+    } catch (error) {
+        console.error(error);
     }
 }
 
