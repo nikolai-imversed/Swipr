@@ -1,0 +1,26 @@
+*.log
+*.schema.json
+.DS_Store
+.idea/
+.nyc_output/
+.vscode/
+/coverage/
+/doc/
+/node_modules/
+yarn-error.log
+config/local.yml
+
+# Schemas
+src/api/schemas/specs/*
+
+# Built JS in our libraries
+/lib
+
+# IPs vs countries for migration
+/assets/ip/*.csv
+
+# Built JS in our apps
+/build*
+
+# Test assets
+/test/fixtures/clickhouse/logs
