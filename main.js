@@ -22,9 +22,10 @@ client.on('ready', () => {
     await registerCommand()
 })()
 
-function registerCommand() {
+async function registerCommand() {
     client.commands = new Collection();
-    const commandFiles = fs.readdirSync('./commands').filter((file) => file.endsWith('.js'));
+    const commandDir = await fs.promises.readdir('./commands')
+    const commandFiles = commandDir.filter((file) => file.endsWith('.js'));
 
     for (const file of commandFiles) {
         const command = require(`./commands/${file}`);
@@ -34,8 +35,9 @@ function registerCommand() {
     }
 }
 
-function registerEvents() {
-    const eventFiles = fs.readdirSync('./events').filter((file) => file.endsWith('.js'));
+async function registerEvents() {
+    const eventDir = await fs.promises.readdir('./events')
+    const eventFiles = eventDir.filter((file) => file.endsWith('.js'));
 
     for (const file of eventFiles) {
         const event = require(`./events/${file}`);
@@ -48,25 +50,3 @@ function registerEvents() {
         }
     }
 }
-
-async function registerCommands() {
-    const guildsCollection = client.guilds.cache;
-    const guilds = [...guildsCollection].map(([_, value]) => value);
-
-    const commands = [];
-    const commandFiles = fs.readdirSync(`./commands`).filter((file) => file.endsWith('.js'));
-
-    for (const file of commandFiles) {
-        const command = require(`./commands/${file}`);
-        commands.push(command.data.toJSON());
-    }
-
-    for (const guild of guilds) {
-        const rest = new REST({ version: '10' }).setToken(token);
-
-        await rest
-            .put(Routes.applicationGuildCommands(clientId, guild.id), { body: commands })
-            .then(() => console.log('Successfully registered application commands to', guild.id))
-            .catch(console.error);
-    }
-};
