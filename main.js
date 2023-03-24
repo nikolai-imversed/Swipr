@@ -39,11 +39,10 @@ async function registerCommand() {
 }
 
 async function registerCommands() {
-    const rest = new REST({ version: '9' }).setToken(token);
-
     try {
         console.log('Started refreshing application (/) commands.');
 
+        const rest = new REST({ version: '9' }).setToken(token);
         await rest.put(
             Routes.applicationCommands(clientId),
             { body: client.commands.map((command) => command.data.toJSON()) },

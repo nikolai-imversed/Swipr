@@ -44,17 +44,15 @@ async function imagine(prompt) {
         }
     };
 
-    const header = {
-        authorization: config.SALAI_TOKEN,
-        'Content-Type': 'application/json'
-    };
+    const myHeaders = new Headers()
+    myHeaders.append("Authorization", config.SALAI_TOKEN);
+    myHeaders.append("Content-Type", "application/json");
 
     const response = await fetch("https://discord.com/api/v9/interactions", {
         method: "POST",
-        headers: header,
-        body: JSON.stringify(payload)
+        headers: myHeaders,
+        body: JSON.stringify(payload),
     })
-    console.log(response)
     return response;
 }
 
