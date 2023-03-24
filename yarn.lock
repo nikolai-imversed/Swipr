@@ -81,6 +81,16 @@
   dependencies:
     "@types/node" "*"
 
+async-await-queue@^2.1.4:
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/async-await-queue/-/async-await-queue-2.1.4.tgz#0c44a405cd31369b561f6ac663b74b4b4ffb99ad"
+  integrity sha512-3DpDtxkKO0O/FPlWbk/CrbexjuSxWm1CH1bXlVNVyMBIkKHhT5D85gzHmGJokG3ibNGWQ7pHBmStxUW/z/0LYQ==
+
+async-queue@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/async-queue/-/async-queue-0.1.0.tgz#e7e1f67ac66d3f6c7b8758b85f2cb0baa65b6af4"
+  integrity sha512-E41/eupDTjlDGQ7UCwqWo4D3qQve5oLTttgBYL1XxqtLtL4UPnt8IOU7Mr43/i5ezE+ov/SJ1QoC3hqPv0UaWw==
+
 asynckit@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"

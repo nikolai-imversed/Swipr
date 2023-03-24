@@ -1,5 +1,6 @@
 *.log
 *.schema.json
+*.png
 .DS_Store
 .idea/
 .nyc_output/

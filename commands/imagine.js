@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require("discord.js")
-const { imagine } = require("../requests.js")
+const { imagine } = require("../requests/requests.js")
 const config = require('../config.js')
 
 module.exports = {
@@ -16,13 +16,13 @@ module.exports = {
                 config.CHANNEL_ID = interaction.channel.id;
             }
             const response = await imagine(prompt)
-            console.log(response)
             if (response.status >= 400) {
                 console.error(response.status)
                await interaction.editReply({ content: 'Request has failed; please try later', ephemeral: true })
             } else {
                 await interaction.editReply({ content: 'Your image is being prepared, please wait a moment...', ephemeral: true })
             }
+            console.log ("I AM DONE")
         } catch (error) {
             console.error(error);
             await interaction.editReply({ content: error.message, ephemeral: true });

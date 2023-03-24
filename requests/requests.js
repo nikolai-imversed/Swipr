@@ -1,5 +1,5 @@
 const fetch = require('node-fetch');
-const config = require('./config.js')
+const config = require('../config.js')
 
 async function imagine(prompt) {
     const payload = {

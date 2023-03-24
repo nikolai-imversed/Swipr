@@ -1,4 +1,5 @@
-const { Client, GatewayIntentBits, Collection, Routes, REST } = require('discord.js');
+const { Client, GatewayIntentBits, Collection, Routes, REST} = require('discord.js')
+const fetch = require('node-fetch')
 const fs = require('node:fs');
 const config = require('./config.js')
 
@@ -10,7 +11,8 @@ const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.DirectMessages
+        GatewayIntentBits.DirectMessages,
+        GatewayIntentBits.MessageContent
     ],
 })
 
@@ -18,13 +20,18 @@ client.on('ready', () => {
     console.log(`Logged in as ${client.user.username}!`);
 });
 
-(async () => {
-    await client.login(token)
-    await registerEvents()
-    await registerCommand()
-    await registerCommands()
-})()
+client.on('messageCreate', async (msg) => {
+    if (msg.attachments.size > 0 && msg.attachments.first().contentType.startsWith('image/')) {
+      console.log('Image here');
+      const attachmentUrl = msg.attachments.first().url;
+      const attachmentName = msg.attachments.first().name
+      fetch(attachmentUrl)
+      .then(res => res.body.pipe(fs.createWriteStream(`./images/${attachmentName}`))
+      )
+    }
+  });
 
+  
 async function registerCommand() {
     client.commands = new Collection();
     const commandDir = await fs.promises.readdir('./commands')
@@ -69,3 +76,10 @@ async function registerEvents() {
         }
     }
 }
+
+(async () => {
+    await client.login(token)
+    await registerEvents()
+    await registerCommand()
+    await registerCommands()
+})()
