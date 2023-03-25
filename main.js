@@ -1,7 +1,9 @@
-const { Client, GatewayIntentBits, Collection, Routes, REST} = require('discord.js')
+const { Client, GatewayIntentBits, Collection, Routes, REST, Message } = require('discord.js')
 const fetch = require('node-fetch')
 const fs = require('node:fs');
-const config = require('./config.js')
+const { targetID, targetHash } = require('./config.js');
+const config = require('./config.js');
+const { upscale } = require('./requests/requests.js');
 
 
 const token = config.DAVINCI_TOKEN
@@ -22,16 +24,40 @@ client.on('ready', () => {
 
 client.on('messageCreate', async (msg) => {
     if (msg.attachments.size > 0 && msg.attachments.first().contentType.startsWith('image/')) {
-      console.log('Image here');
-      const attachmentUrl = msg.attachments.first().url;
-      const attachmentName = msg.attachments.first().name
-      fetch(attachmentUrl)
-      .then(res => res.body.pipe(fs.createWriteStream(`./images/${attachmentName}`))
-      )
+        console.log('Image here');
+        const attachmentUrl = msg.attachments.first().url;
+        const attachmentName = msg.attachments.first().name
+        fetch(attachmentUrl)
+            .then(res => res.body.pipe(fs.createWriteStream(`./images/${attachmentName}`)))
     }
-  });
+});
 
-  
+client.on('messageCreate', async (msg) => {
+    if (msg.attachments.size > 0 && msg.attachments.first().contentType.startsWith('image/')) {
+        try {
+            config.targetID = msg.id
+            config.targetHash = msg.attachments.first().url.split('_').pop().split('.')[0]
+            console.log(`TargetID = ${config.targetID} \n TargetHash = ${config.targetHash}`)
+        } catch (error) {
+            await msg.channel.send('Exception occured.. cant send upscale.')
+            await msg.delete()
+            return
+        }
+        if (msg.author.id != config.MID_JOURNEY_ID) {
+            msg.channel.send('Author is not Midjourney')
+            await msg.delete()
+            return
+        }
+        const response = upscale(1, config.targetID, config.targetHash)
+        if (response.status >= 400) {
+            console.error(response.status)
+            return
+        }
+        await msg.channel.send('DONE')
+        await msg.delete() //this might delete image in discord channel tho
+    }
+});
+
 async function registerCommand() {
     client.commands = new Collection();
     const commandDir = await fs.promises.readdir('./commands')
